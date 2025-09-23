@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boyfriend Services Invoice Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printableInvoice, #printableInvoice * { visibility: visible; }
+            #printableInvoice { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body>
     <div class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-200 p-4">
@@ -23,8 +31,8 @@
                     </p>
                 </div>
 
-                <!-- Names Input -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Names and Date Input -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Your boyfriend's name:</label>
                         <input type="text" id="boyfriendName" placeholder="e.g., My Amazing Boyfriend" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
@@ -32,6 +40,25 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Your name:</label>
                         <input type="text" id="myName" placeholder="e.g., Miss Non-Independent" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Invoice date:</label>
+                        <input type="date" id="invoiceDate" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                    </div>
+                </div>
+
+                <!-- Date Format Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Date format:</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="dateFormat" value="US" checked class="mr-2 text-pink-500">
+                            <span class="text-sm text-gray-700">US (MM/DD/YYYY)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="dateFormat" value="UK" class="mr-2 text-pink-500">
+                            <span class="text-sm text-gray-700">UK (DD/MM/YYYY)</span>
+                        </label>
                     </div>
                 </div>
 
@@ -70,7 +97,15 @@
                 <div id="quickAddForm" class="mb-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200 hidden">
                     <h3 class="text-lg font-semibold text-gray-700 mb-3">Adding: <span id="quickAddServiceName"></span></h3>
                     <div class="flex space-x-3 mb-3">
-                        <input type="text" id="quickAddCurrency" placeholder="Currency (e.g., USD, hugs)" class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                        <div class="relative">
+                            <input type="text" id="quickAddCurrency" placeholder="Currency" class="px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 group">
+                                <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9,9h0a3,3,0,0,1,5.12,2.12h0A3,3,0,0,1,12,15"></path><circle cx="12" cy="17" r=".5"></circle></svg>
+                                <div class="absolute bottom-full mb-2 right-0 w-64 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                    Examples: USD, EUR, KES, Hugs, Cuddles, Kisses etc
+                                </div>
+                            </div>
+                        </div>
                         <input type="text" id="quickAddAmount" placeholder="Amount (e.g., 500 or 10)" class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
                     </div>
                     <div class="flex space-x-3">
@@ -85,7 +120,15 @@
                     <div class="space-y-3">
                         <input type="text" id="customDescription" placeholder="What service are you charging for?" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
                         <div class="flex space-x-3">
-                            <input type="text" id="customCurrency" placeholder="Currency" class="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                            <div class="relative">
+                                <input type="text" id="customCurrency" placeholder="Currency" class="px-4 py-3 pr-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
+                                <div class="absolute right-3 top-1/2 transform -translate-y-1/2 group">
+                                    <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9,9h0a3,3,0,0,1,5.12,2.12h0A3,3,0,0,1,12,15"></path><circle cx="12" cy="17" r=".5"></circle></svg>
+                                    <div class="absolute bottom-full mb-2 right-0 w-64 p-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                        Examples: USD, EUR, KES, Hugs, Cuddles, Kisses etc
+                                    </div>
+                                </div>
+                            </div>
                             <input type="text" id="customAmount" placeholder="Amount" class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none">
                             <button onclick="addCustomService()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14" stroke-width="2"></path></svg>
@@ -128,43 +171,51 @@
 
             <!-- Invoice Page (Hidden initially) -->
             <div class="bg-white rounded-3xl shadow-2xl p-8 border-4 border-pink-300 hidden" id="invoicePage">
-                <div class="text-center mb-8">
-                    <div class="text-6xl mb-4">🧾</div>
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">OFFICIAL INVOICE</h1>
-                    <p class="text-lg text-gray-600">Girlfriend Left Behind Inc.</p>
-                    <div class="w-full h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded mt-4"></div>
-                </div>
+                <div id="printableInvoice">
+                    <div class="text-center mb-8">
+                        <div class="text-6xl mb-4">🧾</div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2">OFFICIAL INVOICE</h1>
+                        <p class="text-lg text-gray-600">Girlfriend Left Behind Inc.</p>
+                        <div class="w-full h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded mt-4"></div>
+                    </div>
 
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Bill To:</h2>
-                    <p id="invoiceBoyfriendName" class="text-lg text-gray-800"></p>
-                    <p class="text-sm text-gray-500">Department of Being Away Too Long</p>
-                </div>
+                    <div class="flex justify-between mb-6">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-700 mb-2">Bill To:</h2>
+                            <p id="invoiceBoyfriendName" class="text-lg text-gray-800"></p>
+                            <p class="text-sm text-gray-500">Department of Being Away Too Long</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Invoice Date:</p>
+                            <p id="invoiceDate" class="text-lg font-semibold text-gray-800"></p>
+                        </div>
+                    </div>
 
-                <div class="mb-8">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Services Rendered:</h2>
-                    <div id="invoiceServices" class="space-y-3"></div>
-                </div>
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Services Rendered:</h2>
+                        <div id="invoiceServices" class="space-y-3"></div>
+                    </div>
 
-                <div class="border-t-2 border-gray-200 pt-4 mb-8">
-                    <div class="flex justify-between items-center text-2xl font-bold">
-                        <span class="text-gray-800">TOTAL DUE:</span>
-                        <span id="invoiceTotal" class="text-pink-600"></span>
+                    <div class="border-t-2 border-gray-200 pt-4 mb-8">
+                        <div class="flex justify-between items-center text-2xl font-bold">
+                            <span class="text-gray-800">TOTAL DUE:</span>
+                            <span id="invoiceTotal" class="text-pink-600"></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-pink-50 rounded-lg p-4 mb-6">
+                        <h3 class="font-semibold text-gray-700 mb-2">Payment Terms:</h3>
+                        <p id="invoicePaymentTerms" class="text-gray-600"></p>
+                    </div>
+
+                    <div class="text-center text-sm text-gray-500 mb-6">
+                        <p>This invoice is issued with love ❤️</p>
+                        <p id="invoiceFromName"></p>
+                        <p>Your Temporarily Independent Girlfriend</p>
                     </div>
                 </div>
 
-                <div class="bg-pink-50 rounded-lg p-4 mb-6">
-                    <h3 class="font-semibold text-gray-700 mb-2">Payment Terms:</h3>
-                    <p id="invoicePaymentTerms" class="text-gray-600"></p>
-                </div>
-
-                <div class="text-center text-sm text-gray-500 mb-6">
-                    <p>This invoice is issued with love ❤️</p>
-                    <p id="invoiceFromName"></p>
-                    <p>Your Temporarily Independent Girlfriend</p>
-                </div>
-
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 no-print">
                     <button onclick="shareInvoice()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4 20-7z" stroke-width="2"></path></svg>
                         <span>Send to Boyfriend</span>
@@ -174,7 +225,7 @@
                         <span>Download PDF</span>
                     </button>
                 </div>
-                <div class="mt-4">
+                <div class="mt-4 no-print">
                     <button onclick="backToHome()" class="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 transition-all duration-200">Edit Invoice</button>
                 </div>
             </div>
@@ -184,6 +235,9 @@
     <script>
         let services = [];
         let currentQuickService = '';
+
+        // Set today's date as default
+        document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
 
         function addQuickService(serviceName) {
             currentQuickService = serviceName;
@@ -260,8 +314,8 @@
                         </div>
                         <div class="flex items-center space-x-3">
                             <span class="font-semibold text-gray-800">${service.amount} ${service.currency}</span>
-                            <button onclick="removeService(${service.id})" class="text-red-500 hover:text-red-700 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m3 6 1.5 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2L18 6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-6 5v4m4-4v4" stroke-width="2"></path></svg>
+                            <button onclick="removeService(${service.id})" class="text-red-500 hover:text-red-700 transition-colors text-lg font-bold">
+                                ×
                             </button>
                         </div>
                     </div>
@@ -294,16 +348,29 @@
             document.getElementById('totalAmount').textContent = totals.join(' + ');
         }
 
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const dateFormat = document.querySelector('input[name="dateFormat"]:checked').value;
+            
+            if (dateFormat === 'UK') {
+                return date.toLocaleDateString('en-GB'); // DD/MM/YYYY
+            } else {
+                return date.toLocaleDateString('en-US'); // MM/DD/YYYY
+            }
+        }
+
         function generateInvoice() {
             const boyfriendName = document.getElementById('boyfriendName').value || 'My Amazing Boyfriend';
             const myName = document.getElementById('myName').value;
             const paymentTerms = document.getElementById('paymentTerms').value || 'Payment NOT accepted in the form of unlimited hugs, kisses, and cuddles upon your return. Hard cash required! 💕';
+            const invoiceDateValue = document.getElementById('invoiceDate').value;
             
             // Populate invoice page
             document.getElementById('invoiceBoyfriendName').textContent = boyfriendName;
             document.getElementById('invoiceFromName').textContent = myName ? `From ${myName}` : '';
             document.getElementById('invoicePaymentTerms').textContent = paymentTerms;
             document.getElementById('invoiceTotal').textContent = document.getElementById('totalAmount').textContent;
+            document.getElementById('invoiceDate').textContent = formatDate(invoiceDateValue);
             
             // Populate services
             const invoiceServices = document.getElementById('invoiceServices');
@@ -326,11 +393,14 @@
             const boyfriendName = document.getElementById('boyfriendName').value || 'My Amazing Boyfriend';
             const myName = document.getElementById('myName').value;
             const paymentTerms = document.getElementById('paymentTerms').value || 'Hard cash required - no hugs accepted as payment! 💕';
+            const invoiceDateValue = document.getElementById('invoiceDate').value;
             
             const servicesText = services.map(service => `• ${service.description}: ${service.amount} ${service.currency}`).join('\n');
             const totalText = document.getElementById('totalAmount').textContent;
             
             const invoiceText = `🧾 OFFICIAL BOYFRIEND SERVICES INVOICE 🧾
+
+Date: ${formatDate(invoiceDateValue)}
 
 Dear ${boyfriendName},
 
@@ -357,12 +427,28 @@ P.S. This invoice is payable in affection only! ❤️`;
                 alert('Invoice copied to clipboard! Send it to your boyfriend 💕');
             }
             
-            setTimeout(() => backToHome(), 1000);
+            setTimeout(() => resetAndGoHome(), 1000);
         }
 
         function downloadPDF() {
             window.print();
-            setTimeout(() => backToHome(), 1000);
+            setTimeout(() => resetAndGoHome(), 1000);
+        }
+
+        function resetAndGoHome() {
+            // Clear all form data
+            services = [];
+            document.getElementById('boyfriendName').value = '';
+            document.getElementById('myName').value = '';
+            document.getElementById('paymentTerms').value = '';
+            document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="dateFormat"][value="US"]').checked = true;
+            
+            // Reset display
+            updateDisplay();
+            
+            // Go back to main page
+            backToHome();
         }
 
         function backToHome() {
